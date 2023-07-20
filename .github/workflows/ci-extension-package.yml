@@ -55,5 +55,6 @@ jobs:
         with:
           name: extension
           path: |
-            extension.crx
-            extension.pem
+            ${{ inputs.working-directory }}/*
+            !${{ inputs.working-directory }}/node_modules
+            !${{ inputs.working-directory }}/package-lock.json
