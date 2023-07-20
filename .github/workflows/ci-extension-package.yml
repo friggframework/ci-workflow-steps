@@ -1,0 +1,52 @@
+name: CI / Step
+
+on:
+  workflow_call:
+    inputs:
+      node-version:
+        description: 'The node version to run against'
+        type: string
+        default: 16.x
+      cache-key-prefix:
+        description: 'The unique cache key prefix to store and retrieve the installation cache'
+        type: string
+        default: packages
+      working-directory:
+        description: 'The target folder to run'
+        required: true
+        type: string
+
+jobs:
+  ci-step:
+    runs-on: ubuntu-latest
+
+    steps: 
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: use node ${{ inputs.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: restore packages
+        uses: actions/cache@v3
+        with:
+          path: |
+            **/node_modules
+          key: ${{ inputs.cache-key-prefix }}-cache-${{ hashFiles('**/package-lock.json') }}
+
+      - name: install local dependencies
+        run: |
+          npm install --frozen-lockfile
+        working-directory: ${{ inputs.working-directory }}
+
+      - name: setup google chrome
+        uses: browser-actions/setup-chrome@v1
+        id: setup-chrome
+
+      - name: package extension
+        run: |
+          echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
+          ${{ steps.setup-chrome.outputs.chrome-path }} --pack-extension=./
+        working-directory: ${{ inputs.working-directory }}
