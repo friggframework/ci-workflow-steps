@@ -48,5 +48,16 @@ jobs:
       - name: package extension
         run: |
           echo Installed chromium version: ${{ steps.setup-chrome.outputs.chrome-version }}
-          ${{ steps.setup-chrome.outputs.chrome-path }} --pack-extension=./
-        working-directory: ${{ inputs.working-directory }}
+          ${{ steps.setup-chrome.outputs.chrome-path }} --pack-extension=${{ inputs.working-directory }}
+
+      - name: store crx
+        uses: actions/upload-artifact@v3
+        with:
+          name: extension.crx
+          path: extension.crx
+
+      - name: store pem
+        uses: actions/upload-artifact@v3
+        with:
+          name: extension.pem
+          path: extension.pem
