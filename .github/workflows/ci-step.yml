@@ -44,6 +44,7 @@ jobs:
           path: |
             **/node_modules
           key: ${{ inputs.cache-key-prefix }}-cache-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ inputs.cache-key-prefix }}-cache-
 
       - name: install local dependencies
         run: |
