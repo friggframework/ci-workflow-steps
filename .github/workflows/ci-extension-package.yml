@@ -43,6 +43,8 @@ jobs:
 
       - name: setup google chrome
         uses: browser-actions/setup-chrome@v1
+        with:
+          chrome-version: 1194082
         id: setup-chrome
 
       - name: package extension
